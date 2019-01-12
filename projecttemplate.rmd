@@ -1,0 +1,289 @@
+WineQualityReds Data Exploration by Mona Alsbakhi
+========================================================
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+knitr::opts_chunk$set(error = TRUE)
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(dplyr)
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+getwd()
+setwd('C:/Users/test/Desktop/Explore and sammarize data-Mona')
+wines<- read.csv("wineQualityReds.csv")
+
+str(wines)
+
+wines$quality.level <- ifelse(wines$quality < 5, "low", 
+
+                             ifelse(wines$quality < 7, "high", "medium"))
+
+wines$quality.level <- factor(wines$quality.level, 
+
+                             levels=c("high", "medium", "low"), ordered=TRUE)
+
+attach(wines)
+
+
+qplot ( fixed.acidity, data = wines, geom = "histogram")
+```
+
+According to the histogram above, the data distribution is right skewed, and concentrated around 7 and there are some outliers.
+
+```{r}
+qplot ( volatile.acidity, data = wines, geom = "histogram")
+```
+ 
+ According to the histogram above, the data distribution of volatile acidity seem to be right skewed and normally distributed.
+ 
+ 
+```{r}
+qplot ( citric.acid, data = wines, geom = "histogram")
+```
+
+The data distribution of citric acid is not normall distributed.
+```{r}
+qplot ( residual.sugar, data = wines, geom = "histogram")
+```
+
+The distribution of residual sugar is right skewed, and concentrated around point 2 and There are some outliers.
+```{r}
+qplot ( chlorides, data = wines, geom = "histogram")
+```
+
+The distribution of chlorides is normally distributed, and it concentrated around point 0.09 there are some outliers.
+```{r}
+qplot ( free.sulfur.dioxide, data = wines, geom = "histogram")
+```
+
+According to tha histogram the data distribution of free sulfur dioxide is right skewed and concentrated around point 11
+```{r}
+qplot ( total.sulfur.dioxide, data = wines, geom = "histogram")
+```
+
+According to tha histogram the data distribution of total sulfur dioxide is right skewed and concentrated around point 28, there are some ouliers.
+```{r}
+qplot ( density, data = wines, geom = "histogram")
+```
+
+The distribution of density is normally and concentrated around 0.996, there are few ouliers.
+```{r}
+qplot ( pH, data = wines, geom = "histogram")
+```
+
+The distribution of pH is normally and concentrated around point 3.32
+```{r}
+qplot ( sulphates, data = wines, geom = "histogram")
+```
+
+The distribution of sulphates is right skewed and concentrated around 0.66, there are some ouliers.
+```{r}
+qplot ( alcohol, data = wines, geom = "histogram")
+```
+
+The distribution of alcohol is right skewed and it has a high point around 8.2
+```{r}
+qplot ( quality, data = wines, geom = "histogram")
+```
+
+According to the distribution of quality above, I divided the data into two groups (low, medium, high) the high quality group contains the observations with quality 5 or 6 the medium quality group contains the observations with quality of 4 or 7 and the low quality group contains the observations with quality of 3 or 8
+
+```
+### Univariate Analysis
+
+
+### What is the structure of your dataset?
+There are 1,599 red wines in the dataset with 11 features on the chemical properties of the wine. ( fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, and quality).
+
+### What is/are the main feature(s) of interest in your dataset?
+The main feature in the data set is quality.
+
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+Volatile acidity, citric acid, and alcohol those are may be play a role in the quality of a wine.
+
+### Did you create any new variables from existing variables in the dataset?
+yes, I created a new variable called "quality.level" which is categorically divided into low, medium, and high.
+
+### Of the features you investigated, were there any unusual distributions? \
+yes there are unusual distributhins like, fixed acidity, volatile acidity and citric acid distriutions.
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+No, The data is clean so I did not perform any cleaning process or modification of the data.
+
+# Bivariate Plots Section
+
+
+```
+```{r}
+install.packages("corrplot", repos="http://cran.rstudio.com/")
+```
+```{r}
+M <- cor(wines)
+```
+
+```{r}
+corrplot(M, method = "number", number.cex=0.7)
+```
+
+Here i displyed a correlation matrix to determine the correlations between the variables.
+```{r}
+qplot ( quality,volatile.acidity , data= wines, geom= "point")
+```
+
+The graph shows the lower volatile acidity is the higher the quality becomes. The correlation coefficient between quality and volatile acidity is -0.39
+
+```{r}
+qplot ( alcohol,quality , data= wines, geom= "point")
+```
+
+The correlation coefficient between alcohol and quality is 0.48, the graph shows a positive relationship between alcohol and quality level. medium quality and low quality wines have their percent alcohol contents concentrated around 10 whereas high quality wines have their percent alcohol contents concentrated around 12.
+```{r}
+qplot ( alcohol,volatile.acidity , data= wines, geom= "point")
+```
+
+A weak negative correlation of -0.2 exists between percent alcohol content and volatile acidity.
+```{r}
+qplot ( residual.sugar,alcohol , data= wines, geom= "point")
+```
+
+The correlation coefficient between residual sugar and alcohol is 0.04, which indicates that there is almost no relationship between residual sugar and alcohol
+```{r}
+qplot ( citric.acid, volatile.acidity , data= wines, geom= "point")
+```
+
+There is a negative correlation between citric acid and volatile acidity with correlation coofficient of -0.55
+```{r}
+qplot ( alcohol, density , data= wines, geom= "point")
+```
+
+The correlation coefficient between alcohol and density is -0.5, so when alcohol content increases, the density decreases.
+```{r}
+qplot ( density,fixed.acidity, data= wines, geom= "point")
+```
+
+This graph shows positive relationship between density and fixed acidity with correlation coefficient of 0.67
+```{r}
+qplot ( fixed.acidity, citric.acid, data= wines, geom= "point")
+```
+
+This graph shows positive relationship between fixed acidity and citric acid with correlation coefficient of 0.67
+```{r}
+qplot ( pH, fixed.acidity, data= wines, geom= "point")
+```
+
+This graph shows negative relationship between pH and fixed acidity with correlation coefficient of -0.68
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+I observed a negative relationships between quality level and volatile acidity, and positive correlation between alcohol and quality level.
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+Yes, I observed positive relationship between density and fixed acidity, positive relationship between fixed acidity and citric acid, and negative relationship between pH and fixed acidity. Other variables either show very weak relationship or do not show any relationship. 
+
+### What was the strongest relationship you found?
+Quality is negatively correlated with volatile acidity and positively and strongly correlated with alcohol, also pH is negatively and strongly correlated with fixed acidity.
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_Plots}
+
+qplot ( volatile.acidity, alcohol, aes(color= quality.level ), data= wines, geom= "jitter")
+```
+
+High quality feature seems to be associated with alcohol ranging from 5 to 11, volatile acidity from 0.2 to 0.7
+```{r}
+qplot (density, volatile.acidity, aes(color= quality.level ), data= wines, geom= "jitter")
+```
+
+The densities of high quality wines are concentrated between 0.994 and 0.998, and between 0.2 and 0.9 of volatile acidity.
+```{r}
+qplot ( volatile.acidity, alcohol, color= quality.level, aes(size= citric.acid ), data= wines, geom= "jitter")
+```
+
+High quality feature seems to be associated with alcohol ranging from 11 to 13, volatile acidity from 0.2 to 0.5, and citric acid from 0.25 to 0.75
+```{r}
+qplot (fixed.acidity, volatile.acidity, aes(color= quality.level ), data= wines, geom= "jitter")
+```
+
+The distribution of high quality wines seem to be concentrated at fixed acidity values that are between 6 and 10, for volatile acidity between 0.2 and 0.9
+```{r}
+qplot (residual.sugar, alcohol, aes(color= quality.level ), data= wines, geom= "jitter")
+```
+
+The distribution of high quality wines seem to be concentrated at residual sugar values that are between 2 and 3.5, for alcohol between 7 and 12
+```{r}
+qplot ( fixed.acidity,volatile.acidity, color= quality.level, aes(size= pH ), data= wines, geom= "jitter")
+```
+
+According to the graph above, pH increases as fixed acidity decreases.
+```{r}
+qplot ( fixed.acidity, alcohol, color= quality.level, aes(size= citric.acid ), data= wines, geom= "jitter")
+```
+
+According to the graph above, the citric acid increases as fixed acidity increases.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+Quality has a weak positive relationship with alcohol, and weak negative relationship with volatile acid, 
+and there is positive relationship between fixed acidity and citric acid.
+
+### Were there any interesting or surprising interactions between features?
+Residual sugar, it is an important part in wine taste,but it has very little impact on wine quality.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r}
+qplot ( quality, data = wines, geom = "histogram")
+```
+
+### Description One
+The distribution of red wine quality is normal. 83% of wines are rated 5 and 6 (high quality). Although the rating scale is between 0 and 10, there exists no wine that is rated 1, 2, 9 or 10.
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+qplot ( pH, fixed.acidity, data= wines, geom= "point")
+```
+
+### Description Two
+There is a strong negative relationship between pH and fixed acidity with correlation coefficient of -0.68
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+qplot ( volatile.acidity, alcohol, aes(color= quality.level ), data= wines, geom= "jitter")
+```
+
+### Description Three
+Wine with high percent alcohol content and low volatile acidity tends to be rated as high quality wine. So the volatile acidity in wine and percent alcohol content are two important components in the quality and taste of red wines.
+------
+
+# Reflection
+
+The wines data set contains information on 1599 wines across 12 variables . I understanding the variables in the data set, I put some  questions, I explored the quality of wines y creating a quality level variable and categorise the quality into three levels (high, low, medium).There was a relation between the volatile acidity of a wine and its quality. There was also a relation between the alcohol and its quality. Both of them (volatile acidity and alcohol) are two important components in the quality and taste of red wines.The quality of the analysis can be improved by collecting more data, and creating more variables to increase the quality of wine.
